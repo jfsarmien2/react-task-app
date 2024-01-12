@@ -1,3 +1,4 @@
+import Button from "./Button";
 import Input from "./Input";
 
 function Login() {
@@ -10,6 +11,8 @@ function Login() {
         <Input name='Email' type='email' />
         <Input name='Password' type='password' />
         <Input name='Confirm password' type='password' />
+        <Button text='Login' loading />
+        <Button secondary text='Register' />
       </div>
     </div>
   );

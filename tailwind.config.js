@@ -8,7 +8,19 @@ export default {
       lg: "1200px",
       xl: "1440px",
     },
-    extend: {},
+    extend: {
+      colors: {
+        customBlue: "#0A32B3",
+        customPink: "#BD365D",
+      },
+      fontFamily: {
+        lato: ["Lato", "sans-serif"],
+      },
+      backgroundImage: {
+        pattern:
+          "url('https://i.pinimg.com/736x/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg')",
+      },
+    },
   },
   plugins: [],
 };
