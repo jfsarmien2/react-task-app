@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 type Inputs = {
   email: string;
   password: string;
+  confirmPassword: string;
 };
 
 const schema = yup.object().shape({
@@ -17,9 +18,13 @@ const schema = yup.object().shape({
     .email("Please enter a valid email.")
     .required("Please enter your email."),
   password: yup.string().required("Please enter your password."),
+  confirmPassword: yup
+    .string()
+    .required("Please confirm your password.")
+    .oneOf([yup.ref("password"), ""], "Password do not match."),
 });
 
-function Login() {
+function SignUp() {
   const {
     register,
     handleSubmit,
@@ -31,11 +36,14 @@ function Login() {
     console.log(data);
   };
   return (
-    <div className='w-full md:max-w-[450px]' onSubmit={handleSubmit(onSubmit)}>
+    <div className='w-full md:max-w-[450px]'>
       <h1 className='text-white text-center font-bold text-4xl md:text-6xl mb-10'>
-        Login
+        Register
       </h1>
-      <form className='flex flex-col gap-3 bg-white p-6 min-h-[150px] rounded-xl'>
+      <form
+        className='flex flex-col gap-3 bg-white p-6 min-h-[150px] rounded-xl'
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <Input
           {...register("email")}
           type='text'
@@ -49,15 +57,23 @@ function Login() {
           placeholder='Enter your password'
           error={errors.password?.message}
         />
+
+        <Input
+          {...register("confirmPassword")}
+          type='password'
+          placeholder='Confirm Password'
+          error={errors.confirmPassword?.message}
+        />
+
         <React.Fragment>
-          <Button text='Login' type='submit' />
+          <Button text='Register' type='submit' secondary />
           <div className='w-full flex flex-col sm:flex-row sm:gap-2'>
-            <p>Don't have an account?</p>
+            <p>Already have an account?</p>
             <Link
-              to='/register'
+              to='/login'
               className='text-blue-400 hover:text-blue-500 transition-all cursor-pointer'
             >
-              Register
+              Login
             </Link>
           </div>
         </React.Fragment>
@@ -66,4 +82,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default SignUp;

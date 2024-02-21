@@ -6,6 +6,7 @@ type Props = {
   secondary?: boolean;
   onClick?: () => void;
   loading?: boolean;
+  type?: "submit" | "reset" | "button" | undefined;
 };
 
 const Button = ({
@@ -14,9 +15,11 @@ const Button = ({
   secondary,
   onClick,
   loading = false,
+  type,
 }: Props) => {
   return (
     <button
+      type={type}
       onClick={onClick}
       className={`py-2 px-9 rounded-full flex justify-center items-center gap-1
       transition-all
