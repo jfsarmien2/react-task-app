@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { Link } from "react-router-dom";
 import { useSignUpQuery } from "../services/query";
 import Spinner from "./Spinner";
+import CustomButton from "./CustomButton";
 
 type Inputs = {
   email: string;
@@ -33,20 +34,19 @@ function SignUp() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<Inputs>({
     resolver: yupResolver(schema),
   });
 
-  const [loading, setLoading] = useState(false);
-
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const { email, password, confirmPassword } = data;
-    setLoading(true);
-    useSignUpQuery({ email, password, confirmPassword });
-    setLoading(false);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(useSignUpQuery({ email, password, confirmPassword }));
+      }, 500);
+    });
   };
-
   return (
     <div className='w-full md:max-w-[450px]'>
       <h1 className='text-white text-center font-bold text-4xl md:text-6xl mb-10'>
@@ -76,8 +76,9 @@ function SignUp() {
           placeholder='Confirm Password'
           error={errors.confirmPassword?.message}
         />
-        <Button text='Register' type='submit' secondary loading={loading} />
-
+        <CustomButton disabled={isSubmitting} loading={isSubmitting}>
+          Register
+        </CustomButton>
         <div className='w-full flex flex-col sm:flex-row sm:gap-2'>
           <p>Already have an account?</p>
           <Link
