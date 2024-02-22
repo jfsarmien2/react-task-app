@@ -5,6 +5,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Link } from "react-router-dom";
+import { useSignUpQuery } from "../services/query";
+import Spinner from "./Spinner";
 
 type Inputs = {
   email: string;
@@ -17,7 +19,10 @@ const schema = yup.object().shape({
     .string()
     .email("Please enter a valid email.")
     .required("Please enter your email."),
-  password: yup.string().required("Please enter your password."),
+  password: yup
+    .string()
+    .required("Please enter your password.")
+    .min(6, "Password shoud be at least 6 characters."),
   confirmPassword: yup
     .string()
     .required("Please confirm your password.")
@@ -32,9 +37,16 @@ function SignUp() {
   } = useForm<Inputs>({
     resolver: yupResolver(schema),
   });
+
+  const [loading, setLoading] = useState(false);
+
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
+    const { email, password, confirmPassword } = data;
+    setLoading(true);
+    useSignUpQuery({ email, password, confirmPassword });
+    setLoading(false);
   };
+
   return (
     <div className='w-full md:max-w-[450px]'>
       <h1 className='text-white text-center font-bold text-4xl md:text-6xl mb-10'>
@@ -64,19 +76,17 @@ function SignUp() {
           placeholder='Confirm Password'
           error={errors.confirmPassword?.message}
         />
+        <Button text='Register' type='submit' secondary loading={loading} />
 
-        <React.Fragment>
-          <Button text='Register' type='submit' secondary />
-          <div className='w-full flex flex-col sm:flex-row sm:gap-2'>
-            <p>Already have an account?</p>
-            <Link
-              to='/login'
-              className='text-blue-400 hover:text-blue-500 transition-all cursor-pointer'
-            >
-              Login
-            </Link>
-          </div>
-        </React.Fragment>
+        <div className='w-full flex flex-col sm:flex-row sm:gap-2'>
+          <p>Already have an account?</p>
+          <Link
+            to='/login'
+            className='text-blue-400 hover:text-blue-500 transition-all cursor-pointer'
+          >
+            Login
+          </Link>
+        </div>
       </form>
     </div>
   );

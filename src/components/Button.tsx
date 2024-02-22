@@ -14,20 +14,18 @@ const Button = ({
   className,
   secondary,
   onClick,
-  loading = false,
+  loading,
   type,
 }: Props) => {
   return (
     <button
       type={type}
-      onClick={onClick}
-      className={`py-2 px-9 rounded-full flex justify-center items-center gap-1
-      transition-all
+      className={`py-2 px-9 rounded-full flex justify-center items-center gap-5
        ${
          secondary
            ? "bg-pink-400 hover:bg-pink-500"
            : "bg-blue-400 hover:bg-blue-500"
-       }   text-white ${className}`}
+       }   text-white ${loading && "cursor-not-allowed"} ${className}`}
       disabled={loading}
     >
       {loading && <Spinner />}
