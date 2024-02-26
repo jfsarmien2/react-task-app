@@ -5,6 +5,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Link } from "react-router-dom";
+import { useSignInQuery } from "../services/query";
+import CustomButton from "./CustomButton";
 
 type Inputs = {
   email: string;
@@ -20,16 +22,21 @@ const schema = yup.object().shape({
 });
 
 function Login() {
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<Inputs>({
     resolver: yupResolver(schema),
   });
+
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
+    const { email, password } = data;
+    useSignInQuery({ email, password }, setLoading, reset);
   };
+
   return (
     <div className='w-full md:max-w-[450px]' onSubmit={handleSubmit(onSubmit)}>
       <h1 className='text-white text-center font-bold text-4xl md:text-6xl mb-10'>
@@ -50,7 +57,9 @@ function Login() {
           error={errors.password?.message}
         />
         <React.Fragment>
-          <Button text='Login' type='submit' />
+          <CustomButton disabled={loading} loading={loading}>
+            Log In
+          </CustomButton>
           <div className='w-full flex flex-col sm:flex-row sm:gap-2'>
             <p>Don't have an account?</p>
             <Link

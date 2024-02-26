@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import Button from "./Button";
 import Input from "./Input";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Link } from "react-router-dom";
 import { useSignUpQuery } from "../services/query";
-import Spinner from "./Spinner";
 import CustomButton from "./CustomButton";
 
 type Inputs = {
@@ -34,18 +32,26 @@ function SignUp() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    reset,
+    formState: { errors },
   } = useForm<Inputs>({
     resolver: yupResolver(schema),
   });
 
+  const [loading, setLoading] = useState(false);
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const { email, password, confirmPassword } = data;
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(useSignUpQuery({ email, password, confirmPassword }));
-      }, 500);
-    });
+    // return new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     resolve(useSignUpQuery({ email, password, confirmPassword }));
+    //   }, 500);
+    // });
+    await useSignUpQuery(
+      { email, password, confirmPassword },
+      setLoading,
+      reset
+    );
   };
   return (
     <div className='w-full md:max-w-[450px]'>
@@ -76,7 +82,7 @@ function SignUp() {
           placeholder='Confirm Password'
           error={errors.confirmPassword?.message}
         />
-        <CustomButton disabled={isSubmitting} loading={isSubmitting}>
+        <CustomButton disabled={loading} loading={loading}>
           Register
         </CustomButton>
         <div className='w-full flex flex-col sm:flex-row sm:gap-2'>

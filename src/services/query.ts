@@ -1,18 +1,28 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { auth } from "./firebase";
+import { redirect } from "react-router-dom";
 import { toastError } from "../utils/toast";
-import { setLoadingType } from "../utils/type";
+import { ResetFormType, setLoadingType } from "../utils/type";
 
-export const useSignUpQuery = (data: {
-  email: string;
-  password: string;
-  confirmPassword: string;
-}) => {
+export const useSignUpQuery = async (
+  data: {
+    email: string;
+    password: string;
+    confirmPassword: string;
+  },
+  setLoading: setLoadingType,
+  reset: ResetFormType
+) => {
   const { email, password, confirmPassword } = data;
+  setLoading(true);
   if (email && password) {
     if (password === confirmPassword) {
-      createUserWithEmailAndPassword(auth, email, password)
+      await createUserWithEmailAndPassword(auth, email, password)
         .then(({ user }) => {
+          reset();
           console.log(user);
         })
         .catch((error) => {
@@ -26,4 +36,28 @@ export const useSignUpQuery = (data: {
   } else {
     toastError("Fields should not be left empty.");
   }
+  setLoading(false);
+};
+
+export const useSignInQuery = async (
+  data: {
+    email: string;
+    password: string;
+  },
+  setLoading: setLoadingType,
+  reset: ResetFormType
+) => {
+  const { email, password } = data;
+  setLoading(true);
+  await signInWithEmailAndPassword(auth, email, password)
+    .then(({ user }) => {
+      console.log(user);
+      reset();
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      toastError(`Error ${errorCode}: ${errorMessage}`);
+    });
+  setLoading(false);
 };
