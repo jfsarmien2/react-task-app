@@ -4,7 +4,7 @@ import Input from "./Input";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSignInQuery } from "../services/query";
 import CustomButton from "./CustomButton";
 
@@ -23,6 +23,7 @@ const schema = yup.object().shape({
 
 function Login() {
   const [loading, setLoading] = useState(false);
+  const goTo = useNavigate();
   const {
     register,
     handleSubmit,
@@ -34,7 +35,7 @@ function Login() {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     const { email, password } = data;
-    useSignInQuery({ email, password }, setLoading, reset);
+    useSignInQuery({ email, password }, setLoading, reset, goTo);
   };
 
   return (

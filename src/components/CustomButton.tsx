@@ -15,7 +15,7 @@ const CustomButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (props, ref) => {
     const {
       children,
-      secondary = true,
+      secondary,
       loading = false,
       disabled = false,
       ...rest

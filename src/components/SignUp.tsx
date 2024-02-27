@@ -3,7 +3,7 @@ import Input from "./Input";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSignUpQuery } from "../services/query";
 import CustomButton from "./CustomButton";
 
@@ -39,18 +39,15 @@ function SignUp() {
   });
 
   const [loading, setLoading] = useState(false);
+  const goTo = useNavigate();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const { email, password, confirmPassword } = data;
-    // return new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     resolve(useSignUpQuery({ email, password, confirmPassword }));
-    //   }, 500);
-    // });
     await useSignUpQuery(
       { email, password, confirmPassword },
       setLoading,
-      reset
+      reset,
+      goTo
     );
   };
   return (

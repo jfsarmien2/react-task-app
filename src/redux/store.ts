@@ -1,5 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
+import { UserInfo } from "../utils/type";
+
+export const defaulUser: UserInfo = {
+  id: "",
+  isOnline: false,
+  email: "",
+  username: "",
+  img: "",
+  creationTime: "",
+  lastSeen: "",
+  bio: "",
+};
 
 export const store = configureStore({
   reducer: {
